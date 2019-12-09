@@ -3,6 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+<<<<<<< Updated upstream
+=======
+const bodyParser = require('body-parser');
+// var mongoose = require('mongoose');
+// require('dotenv').config();
+
+
+
+
+
+>>>>>>> Stashed changes
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -12,6 +23,13 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+
+//CORS code 
+ app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+}); 
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -38,4 +56,28 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+<<<<<<< Updated upstream
+=======
+//CONNECTION TO MONGODB
+/* const mongoURI = process.env.MONGO_CONNECTION;
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true }),
+(database) => {
+  db = database.db('volunteer_hub')
+};
+
+mongoose.connection.on('connected', () => {
+  console.log("DB connected!");
+});
+
+mongoose.connection.on('error', (err) => {
+  console.log(err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log("Db is DISCONNECTED!");
+}); */
+
+
+>>>>>>> Stashed changes
 module.exports = app;
