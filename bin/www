@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('volunteer-hub-express:server');
 var debug = require('debug')('the-volunteer-hub-backend:server');
 var http = require('http');
 
@@ -89,5 +88,4 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
-}
 }
