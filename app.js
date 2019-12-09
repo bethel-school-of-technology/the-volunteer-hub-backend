@@ -3,17 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-<<<<<<< Updated upstream
-=======
 const bodyParser = require('body-parser');
-// var mongoose = require('mongoose');
-// require('dotenv').config();
 
 
 
 
 
->>>>>>> Stashed changes
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -56,10 +51,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-<<<<<<< Updated upstream
-=======
 //CONNECTION TO MONGODB
-/* const mongoURI = process.env.MONGO_CONNECTION;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true }),
 (database) => {
@@ -76,8 +68,6 @@ mongoose.connection.on('error', (err) => {
 
 mongoose.connection.on('disconnected', () => {
   console.log("Db is DISCONNECTED!");
-}); */
 
 
->>>>>>> Stashed changes
 module.exports = app;

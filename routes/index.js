@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
-<<<<<<< Updated upstream
-=======
 // const Post = require('../models/Posts');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 //Code below is used to verify backend - frontend connection
 var staticModels = require('../staticModels/posts');
@@ -14,15 +12,12 @@ router.get('/staticposts', function (req, res, next) {
   ));
 });
 
->>>>>>> Stashed changes
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-<<<<<<< Updated upstream
-=======
 // router.post('/post', (req, res, next) => {
 //   const post = new Post({
 //     title: req.body.title,
@@ -42,5 +37,4 @@ router.get('/', function(req, res, next) {
 // });
 
 
->>>>>>> Stashed changes
 module.exports = router;
