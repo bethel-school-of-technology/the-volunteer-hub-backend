@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+require('dotenv').config();
 
 
 
@@ -52,6 +54,7 @@ app.use(function(err, req, res, next) {
 });
 
 //CONNECTION TO MONGODB
+ const mongoURI = process.env.MONGO_CONNECTION;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true }),
 (database) => {
@@ -68,6 +71,7 @@ mongoose.connection.on('error', (err) => {
 
 mongoose.connection.on('disconnected', () => {
   console.log("Db is DISCONNECTED!");
+}); 
 
 
 module.exports = app;
