@@ -28,6 +28,7 @@ router.post('/signUp', (req, res, next) => {
 router.post
 
 //Route for a user to login.
+//This route is currently no working. It responds with Login Failed in postman and User Not Found in the console.
 router.post('/login', function (req, res, next) {
   User.findOne({
     where: { username: req.body.username }
