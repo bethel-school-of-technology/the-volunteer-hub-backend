@@ -7,9 +7,9 @@ var authService = {
             username: user.username,
             _id: user._id
         }, 'secretKey',
-        {
-            expiresIn: '1h'
-        });
+            {
+                expiresIn: '1h'
+            });
         return token
     },
     hashPassword: function (plaintextPassword) {
@@ -17,6 +17,9 @@ var authService = {
         let hash = bcrypt.hashSync(plaintextPassword, salt);
         return hash;
     },
+    comparePasswords: function (plaintextPassword, hashPassword) {
+        return bcrypt.compareSync(plaintextPassword, hashPassword)
+    }
 }
 
 module.exports = authService;

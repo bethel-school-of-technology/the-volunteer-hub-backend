@@ -3,6 +3,7 @@ var router = express.Router();
 const User = require('../models/Users');
 const authService = require('../services/auth');
 
+
 //Route for the a user to sign up.
 router.post('/signUp', (req, res, next) => {
   const user = new User({
@@ -16,6 +17,7 @@ router.post('/signUp', (req, res, next) => {
   })
   .catch(err => {
     console.log(err)
+    
   });
   res.status(201).json({
     message: "You are a new user!",
@@ -23,6 +25,28 @@ router.post('/signUp', (req, res, next) => {
   });
 });
 
-//Route for loggin a user in.
+router.post
+
+//Route for a user to login.
+router.post('/login', function (req, res, next) {
+  User.findOne({
+    where: { username: req.body.username }
+  })
+  .then(user => {
+    if (!user) {
+      console.log("User not found.");
+      res.status(401).json({ message: "Login failed."});
+    } else {
+      let passwordMatch = authService.comparePasswords(req.body.password, user.password);
+      if (passwordMatch) {
+        let token = authService.signUser(user);
+        res.cookie('jwt', token);
+      } else {
+        console.log("Wrong password!");
+      }
+    }
+  })
+});
+
 
 module.exports = router;
