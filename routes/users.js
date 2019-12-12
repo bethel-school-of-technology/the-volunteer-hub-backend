@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const User = require('../models/Users');
+var User = require('../models/Users');
 const authService = require('../services/auth');
 
 
@@ -25,13 +25,15 @@ router.post('/signUp', (req, res, next) => {
   });
 });
 
-router.post
 
-//Route for a user to login.
-//This route is currently no working. It responds with Login Failed in postman and User Not Found in the console.
+
+// Route for a user to login.
+// This route is currently no working. It responds with Login Failed in postman and User Not Found in the console.
 router.post('/login', function (req, res, next) {
+  var Username = req.body.username;
+  console.log(Username);
   User.findOne({
-    where: { username: req.body.username }
+     username: Username 
   })
   .then(user => {
     if (!user) {
@@ -45,6 +47,8 @@ router.post('/login', function (req, res, next) {
       } else {
         console.log("Wrong password!");
       }
+      console.log('user found');
+      return res.status(200).send();
     }
   })
 });
