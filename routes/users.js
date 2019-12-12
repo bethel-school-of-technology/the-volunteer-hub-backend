@@ -25,33 +25,29 @@ router.post('/signUp', (req, res, next) => {
   });
 });
 
-
-
-// Route for a user to login.
-// This route is currently no working. It responds with Login Failed in postman and User Not Found in the console.
+//Route for a user to  login.
 router.post('/login', function (req, res, next) {
-  var Username = req.body.username;
-  console.log(Username);
   User.findOne({
-    username: Username
+     'username': req.body.username
   })
-    .exec(user => {
-      if (!user) {
-        console.log("User not found.");
-        res.status(401).json({ message: "Login failed." });
+  .then(user => {
+    if (!user) {
+      console.log("User not found.");
+      res.status(401).json({ message: "Login failed."});
+    } else {
+      let passwordMatch = authService.comparePasswords(req.body.password, user.password);
+      if (passwordMatch) {
+        let token = authService.signUser(user);
+        res.cookie('jwt', token);
+        console.log(user);
+        console.log(token);
       } else {
-        let passwordMatch = authService.comparePasswords(req.body.password, user.password);
-        if (passwordMatch) {
-          let token = authService.signUser(user);
-          res.cookie('jwt', token);
-        } else {
-          console.log("Wrong password!");
-        }
+        console.log("Wrong password!");
       }
-      console.log('user found');
+      
       return res.status(200).send();
     }
-    )
+  })
 });
 
 
