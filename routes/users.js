@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/Users');
 const authService = require('../services/auth');
+const Org = require('../models/Organizations');
 
 
-//Route for the a user to sign up.
+
+//ROUTE FOR A NEW USER TO SIGNUP.
 router.post('/signUp', (req, res, next) => {
   const user = new User({
     username: req.body.username,
@@ -25,7 +27,7 @@ router.post('/signUp', (req, res, next) => {
   });
 });
 
-//Route for a user to  login.
+//ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
      'username': req.body.username
@@ -49,6 +51,48 @@ router.post('/login', function (req, res, next) {
     }
   })
 });
+
+//ROUTE FOR A USER TO LOGOUT.
+router.get('/logout', function (req, res, send) {
+  res.cookie('jwt', "", { expires: new Date(0) });
+  res.send('You are logged out');
+});
+
+//ROUTE FOR A REGISTERED USER TO CREATE AN ORGANIZATION
+router.post('/createOrg', function (req, res, next) {
+  let token = req.cookies.jwt;
+  if (token) {
+    authService.verifyUser(token)
+      .then(user => {
+        if (user) {
+          const org = new Org({
+            username: user.username,
+            name: req.body.name,
+            city: req.body.city,
+            state: req.body.state,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+          });
+          org.save()
+            .then(result => {
+              console.log(result);
+            })
+            .catch(err => {
+              console.log(err)
+            });
+          res.status(201).json({
+            message: "Your organization has been posted.",
+            createdOrg: org
+          });
+        }
+      })
+  } else {
+    res.send("You must be logged in.");
+    console.log("You must be logged in.");
+  }
+});
+
+
 
 
 module.exports = router;

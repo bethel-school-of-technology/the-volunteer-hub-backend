@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 require('dotenv').config();
+require('mongodb');
 
 
 
@@ -71,6 +72,8 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
   console.log("Db is DISCONNECTED!");
 }); 
+
+mongoose.set('useCreateIndex', true);
 
 
 module.exports = app;
