@@ -11,6 +11,7 @@ require('dotenv').config();
 
 
 
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -98,6 +99,8 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
   console.log("Db is DISCONNECTED!");
 }); 
+
+mongoose.set('useCreateIndex', true);
 
 
 module.exports = app;

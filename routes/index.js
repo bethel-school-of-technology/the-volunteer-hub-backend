@@ -1,35 +1,27 @@
 var express = require('express');
 var router = express.Router();
-const Post = require('../models/Posts');
+const org = require('../models/Organizations');
+
+
 
 //Code below is used to verify backend - frontend connection
-var staticModels = require('../staticModels/posts');
+// var staticModels = require('../staticModels/posts');
 
-router.get('/staticposts', function (req, res, next) {
-  res.send(JSON.stringify(
-    staticModels.Post
-  ));
-});
+// router.get('/staticposts', function (req, res, next) {
+//   res.send(JSON.stringify(
+//     staticModels.Post
+//   ));
+// });
 
-
-// This route is for testing purposes via Postman
-router.post('/post', (req, res, next) => {
-  const post = new Post({
-    title: req.body.title,
-    description: req.body.description
-  });
-  post.save()
-    .then(result => {
-      console.log(result);
-    })
-    .catch(err => {
-      console.log(err)
-    });
-  res.status(201).json({
-    message: "This is your new post!",
-    createdPost: post
-  });
+//ROUTE FOR GETTING ALL ORGANIZATIONS IN THE DATABASE
+router.get('/getOrgs', function (req, res, next) {
+  org.find()
+  .then(result => {
+    console.log(result);
+    res.send(result);
+  })
 });
 
 
 module.exports = router;
+
