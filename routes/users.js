@@ -37,7 +37,6 @@ router.post('/login', function (req, res, next) {
           message: "Login failed."
         });
       } else {
-        console.log("Wrong password!");
         let passwordMatch = authService.comparePasswords(req.body.password, user.password);
         if (passwordMatch) {
           let token = authService.signUser(user);
