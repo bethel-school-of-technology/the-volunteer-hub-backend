@@ -7,7 +7,7 @@ const Org = require('../models/Organizations');
 
 
 //ROUTE FOR A NEW USER TO SIGNUP.
-router.post('/signUp', (req, res, next) => {
+router.post('/signup', (req, res, next) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
@@ -18,38 +18,41 @@ router.post('/signUp', (req, res, next) => {
       console.log(result);
     })
     .catch(err => {
-      console.log(err)
-
+      if (err.code === 11000) {
+        res.send("User already exists.");
+        console.log("User already exists.", err);
+      } else {
+        res.status(201).json({
+          message: "You are a new user!",
+          createdPost: user 
+        });
+      }
     });
-  res.status(201).json({
-    message: "You are a new user!",
-    createdPost: user
-  });
 });
 
 //ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
-     'username': req.body.username
+    'username': req.body.username
   })
-  .then(user => {
-    if (!user) {
-      console.log("User not found.");
-      res.status(401).json({ message: "Login failed."});
-    } else {
-      let passwordMatch = authService.comparePasswords(req.body.password, user.password);
-      if (passwordMatch) {
-        let token = authService.signUser(user);
-        res.cookie('jwt', token);
-        console.log(user);
-        console.log(token);
+    .then(user => {
+      if (!user) {
+        console.log("User not found.");
+        res.status(401).json({ message: "Login failed." });
       } else {
-        console.log("Wrong password!");
+        let passwordMatch = authService.comparePasswords(req.body.password, user.password);
+        if (passwordMatch) {
+          let token = authService.signUser(user);
+          res.cookie('jwt', token);
+          console.log(user);
+          console.log(token);
+        } else {
+          console.log("Wrong password!");
+        }
+
+        return res.status(200).send();
       }
-      
-      return res.status(200).send();
-    }
-  })
+    })
 });
 
 //ROUTE FOR A USER TO LOGOUT.
