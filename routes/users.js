@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require('../models/Users');
 const authService = require('../services/auth');
 const Org = require('../models/Organizations');
+var ObjectId = require('mongodb').ObjectId;
 
 
 
@@ -16,16 +17,15 @@ router.post('/signup', (req, res, next) => {
   user.save()
     .then(result => {
       console.log(result);
+      res.status(201).json({
+        message: "You are a new user!",
+        createdPost: user
+      });
     })
     .catch(err => {
       if (err.code === 11000) {
         res.send("User already exists.");
         console.log("User already exists.", err);
-      } else {
-        res.status(201).json({
-          message: "You are a new user!",
-          createdPost: user 
-        });
       }
     });
 });
@@ -49,8 +49,7 @@ router.post('/login', function (req, res, next) {
         } else {
           console.log("Wrong password!");
         }
-
-        return res.status(200).send();
+        return res.status(200).json({ message: "You are logged in."});
       }
     })
 });
@@ -59,6 +58,29 @@ router.post('/login', function (req, res, next) {
 router.get('/logout', function (req, res, send) {
   res.cookie('jwt', "", { expires: new Date(0) });
   res.send('You are logged out');
+});
+
+//ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
+router.get('/profile', function (req, res, next) {
+  let token = req.cookies.jwt;
+  if (token) {
+    authService.verifyUser(token)
+      .then(user => {
+        if (user) {
+          User.findOne({ 'username': user.username }).then(user => {
+            console.log(user);
+          }).catch(err => {
+            console.log(err);
+          });
+          Org.find({ 'username': user.username }).then(org => {
+            console.log(org);
+            res.send([user, org]).json;
+          });
+        }
+      })
+  } else {
+    console.log("You must be logged in.");
+  }
 });
 
 //ROUTE FOR A REGISTERED USER TO CREATE AN ORGANIZATION
