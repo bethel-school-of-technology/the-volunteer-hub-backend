@@ -7,7 +7,7 @@ var authService = {
         const token = jwt.sign({
             username: user.username,
             _id: user._id
-        }, 'secretKey',
+        }, 'volunteer-hub-secret-key',
             {
                 expiresIn: '1h'
             });
@@ -15,7 +15,7 @@ var authService = {
     },
     verifyUser: function (token) {
         try {
-            let decoded = jwt.verify(token, 'secretKey');
+            let decoded = jwt.verify(token, 'volunteer-hub-secret-key');
             return user.findById(decoded._id);
         } catch (err) {
             console.log(err);

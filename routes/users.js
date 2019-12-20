@@ -49,7 +49,7 @@ router.post('/login', function (req, res, next) {
         } else {
           console.log("Wrong password!");
         }
-        return res.status(200).json({ message: "You are logged in."});
+        return res.send(this.token);
       }
     })
 });

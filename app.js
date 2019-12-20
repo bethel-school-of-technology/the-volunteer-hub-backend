@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 
@@ -61,6 +62,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
@@ -79,6 +81,10 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// USING BODY PARSER PACKAGE
+app.use(bodyParser.json());
+
 
 //CONNECTION TO MONGODB
  const mongoURI = process.env.MONGO_CONNECTION;
