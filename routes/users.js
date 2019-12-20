@@ -48,12 +48,13 @@ router.post('/login', function (req, res, next) {
         if (passwordMatch) {
           let token = authService.signUser(user);
           res.cookie('jwt', token);
-          console.log(user);
-          console.log(token);
+          console.log(user, token);
         } else {
           console.log("Wrong password!");
         }
-        return res.send(this.token);
+        return res.status(201).json({
+          message: "You are logged in."
+        });
       }
     })
 });
