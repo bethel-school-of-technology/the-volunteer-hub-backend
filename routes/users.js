@@ -17,15 +17,17 @@ router.post('/signup', (req, res, next) => {
   user.save()
     .then(result => {
       console.log(result);
-      res.status(201).json({
-        message: "You are a new user!",
-        createdPost: user
-      });
     })
     .catch(err => {
       if (err.code === 11000) {
         res.send("User already exists.");
         console.log("User already exists.", err);
+      } else {
+        res.status(201).json({
+          message: "You are a new user!",
+          createdPost: user
+        });
+        res.render('login')
       }
     });
 });
