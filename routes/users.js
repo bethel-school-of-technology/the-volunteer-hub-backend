@@ -24,8 +24,9 @@ router.post('/signup', (req, res, next) => {
       } else {
         res.status(201).json({
           message: "You are a new user!",
-          createdPost: user 
+          createdPost: user
         });
+        res.render('login')
       }
     });
 });
@@ -33,12 +34,14 @@ router.post('/signup', (req, res, next) => {
 //ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
-    'username': req.body.username
-  })
+      'username': req.body.username
+    })
     .then(user => {
       if (!user) {
         console.log("User not found.");
-        res.status(401).json({ message: "Login failed." });
+        res.status(401).json({
+          message: "Login failed."
+        });
       } else {
         let passwordMatch = authService.comparePasswords(req.body.password, user.password);
         if (passwordMatch) {
@@ -57,7 +60,9 @@ router.post('/login', function (req, res, next) {
 
 //ROUTE FOR A USER TO LOGOUT.
 router.get('/logout', function (req, res, send) {
-  res.cookie('jwt', "", { expires: new Date(0) });
+  res.cookie('jwt', "", {
+    expires: new Date(0)
+  });
   res.send('You are logged out');
 });
 
