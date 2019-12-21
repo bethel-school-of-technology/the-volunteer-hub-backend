@@ -40,21 +40,25 @@ router.post('/login', function (req, res, next) {
     .then(user => {
       if (!user) {
         console.log("User not found.");
-        res.status(401).json({
+        return res.status(401).json({
           message: "Login failed."
         });
       } else {
         let passwordMatch = authService.comparePasswords(req.body.password, user.password);
         if (passwordMatch) {
           let token = authService.signUser(user);
-          res.cookie('jwt', token);
           console.log(user, token);
+          return res.status(201).json({
+            message: "You are logged in.",
+            token: token
+          });
         } else {
           console.log("Wrong password!");
+          return res.status(401).json({
+            message: "Login failed."
+          });
         }
-        return res.status(201).json({
-          message: "You are logged in."
-        });
+
       }
     })
 });
@@ -69,7 +73,8 @@ router.get('/logout', function (req, res, send) {
 
 //ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
 router.get('/profile', function (req, res, next) {
-  let token = req.cookies.jwt;
+  let token = req.cookies.token;
+  console.log(token);
   if (token) {
     authService.verifyUser(token)
       .then(user => {
@@ -86,6 +91,7 @@ router.get('/profile', function (req, res, next) {
         }
       })
   } else {
+    res.send('must be logged in');
     console.log("You must be logged in.");
   }
 });
