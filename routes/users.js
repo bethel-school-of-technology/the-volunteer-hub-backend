@@ -47,6 +47,7 @@ router.post('/login', function (req, res, next) {
         let passwordMatch = authService.comparePasswords(req.body.password, user.password);
         if (passwordMatch) {
           let token = authService.signUser(user);
+          res.cookie('jwt', token);
           console.log(user, token);
           return res.status(201).json({
             message: "You are logged in.",
@@ -81,12 +82,13 @@ router.get('/profile', function (req, res, next) {
         if (user) {
           User.findOne({ 'username': user.username }).then(user => {
             console.log(user);
+            res.send(user).json;
           }).catch(err => {
             console.log(err);
           });
           Org.find({ 'username': user.username }).then(org => {
             console.log(org);
-            res.send([user, org]).json;
+            res.send(org).json;
           });
         }
       })
