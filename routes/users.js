@@ -73,7 +73,7 @@ router.get('/logout', function (req, res, send) {
 });
 
 //ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
-router.get('/profile', function (req, res, next) {
+router.get('/Userprofile', function (req, res, next) {
   let token = req.cookies.token;
   console.log(token);
   if (token) {
@@ -82,13 +82,9 @@ router.get('/profile', function (req, res, next) {
         if (user) {
           User.findOne({ 'username': user.username }).then(user => {
             console.log(user);
-            res.send(user).json;
+            res.send(user);
           }).catch(err => {
             console.log(err);
-          });
-          Org.find({ 'username': user.username }).then(org => {
-            console.log(org);
-            res.send(org).json;
           });
         }
       })
@@ -97,6 +93,25 @@ router.get('/profile', function (req, res, next) {
     console.log("You must be logged in.");
   }
 });
+
+//ROUTE TO GET ORGANIZATION FOR PROFILE PAGE
+router.get('/userOrgs', function (req,res,next) {
+  let token = req.cookies.token;
+  if (token) {
+    authService.verifyUser(token).then(user => {
+      if (user) {
+        Org.find({ 'username': user.username }).then(org => {
+          console.log(org);
+          res.send(org);
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+    })
+  } else {
+    res.send('must be logged in');
+  }
+})
 
 //ROUTE FOR A REGISTERED USER TO CREATE AN ORGANIZATION
 router.post('/createOrg', function (req, res, next) {
