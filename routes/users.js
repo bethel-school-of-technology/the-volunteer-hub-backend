@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require('../models/Users');
 const authService = require('../services/auth');
 const Org = require('../models/Organizations');
+var ObjectId = require('mongodb').ObjectId;
 
 
 
@@ -39,7 +40,7 @@ router.post('/login', function (req, res, next) {
     .then(user => {
       if (!user) {
         console.log("User not found.");
-        res.status(401).json({
+        return res.status(401).json({
           message: "Login failed."
         });
       } else {
@@ -47,13 +48,18 @@ router.post('/login', function (req, res, next) {
         if (passwordMatch) {
           let token = authService.signUser(user);
           res.cookie('jwt', token);
-          console.log(user);
-          console.log(token);
+          console.log(user, token);
+          return res.status(201).json({
+            message: "You are logged in.",
+            token: token
+          });
         } else {
           console.log("Wrong password!");
+          return res.status(401).json({
+            message: "Login failed."
+          });
         }
 
-        return res.status(200).send();
       }
     })
 });
@@ -65,6 +71,47 @@ router.get('/logout', function (req, res, send) {
   });
   res.send('You are logged out');
 });
+
+//ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
+router.get('/Userprofile', function (req, res, next) {
+  let token = req.cookies.token;
+  console.log(token);
+  if (token) {
+    authService.verifyUser(token)
+      .then(user => {
+        if (user) {
+          User.findOne({ 'username': user.username }).then(user => {
+            console.log(user);
+            res.send(user);
+          }).catch(err => {
+            console.log(err);
+          });
+        }
+      })
+  } else {
+    res.send('must be logged in');
+    console.log("You must be logged in.");
+  }
+});
+
+//ROUTE TO GET ORGANIZATION FOR PROFILE PAGE
+router.get('/userOrgs', function (req,res,next) {
+  let token = req.cookies.token;
+  if (token) {
+    authService.verifyUser(token).then(user => {
+      if (user) {
+        Org.find({ 'username': user.username }).then(org => {
+          console.log(org);
+          res.send(org);
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+    })
+  } else {
+    res.send('must be logged in');
+  }
+})
 
 //ROUTE FOR A REGISTERED USER TO CREATE AN ORGANIZATION
 router.post('/createOrg', function (req, res, next) {
