@@ -115,7 +115,8 @@ router.get('/userOrgs', function (req,res,next) {
 
 //ROUTE FOR A REGISTERED USER TO CREATE AN ORGANIZATION
 router.post('/createOrg', function (req, res, next) {
-  let token = req.cookies.jwt;
+  let token = req.cookies.token;
+  console.log(token);
   if (token) {
     authService.verifyUser(token)
       .then(user => {
@@ -133,12 +134,16 @@ router.post('/createOrg', function (req, res, next) {
               console.log(result);
             })
             .catch(err => {
-              console.log(err)
+              if (err) {
+                console.log(err);
+              } else {
+                res.status(201).json({
+                  message: "Your organization has been posted.",
+                  createdOrg: org
+                });
+              }
             });
-          res.status(201).json({
-            message: "Your organization has been posted.",
-            createdOrg: org
-          });
+
         }
       })
   } else {
