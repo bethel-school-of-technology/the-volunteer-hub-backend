@@ -35,8 +35,8 @@ router.post('/signup', (req, res, next) => {
 //ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
-      'username': req.body.username
-    })
+    'username': req.body.username
+  })
     .then(user => {
       if (!user) {
         console.log("User not found.");
@@ -95,7 +95,7 @@ router.get('/Userprofile', function (req, res, next) {
 });
 
 //ROUTE TO GET ORGANIZATION FOR PROFILE PAGE
-router.get('/userOrgs', function (req,res,next) {
+router.get('/userOrgs', function (req, res, next) {
   let token = req.cookies.token;
   if (token) {
     authService.verifyUser(token).then(user => {
@@ -128,6 +128,7 @@ router.post('/createOrg', function (req, res, next) {
             state: req.body.state,
             email: req.body.email,
             phoneNumber: req.body.phoneNumber,
+            description: req.body.description
           });
           org.save()
             .then(result => {
@@ -152,6 +153,22 @@ router.post('/createOrg', function (req, res, next) {
   }
 });
 
+//ROUTE FOR A USER TO EDIT THEIR ORGANIZATION INFO
+router.patch('/updateOrg/:orgId', function (req, res, next) {
+  Org.findById(req.params.orgId, (err, result) => {
+    if (result) {
+      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(result);
+        }
+      })
+    } else {
+      res.send('Can not find organization.');
+    }
+  })
+});
 
 
 
