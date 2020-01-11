@@ -35,8 +35,8 @@ router.post('/signup', (req, res, next) => {
 //ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
-    'username': req.body.username
-  })
+      'username': req.body.username
+    })
     .then(user => {
       if (!user) {
         console.log("User not found.");
@@ -80,7 +80,9 @@ router.get('/Userprofile', function (req, res, next) {
     authService.verifyUser(token)
       .then(user => {
         if (user) {
-          User.findOne({ 'username': user.username }).then(user => {
+          User.findOne({
+            'username': user.username
+          }).then(user => {
             console.log(user);
             res.send(user);
           }).catch(err => {
@@ -100,7 +102,9 @@ router.get('/userOrgs', function (req, res, next) {
   if (token) {
     authService.verifyUser(token).then(user => {
       if (user) {
-        Org.find({ 'username': user.username }).then(org => {
+        Org.find({
+          'username': user.username
+        }).then(org => {
           console.log(org);
           res.send(org);
         }).catch(err => {
@@ -157,7 +161,11 @@ router.post('/createOrg', function (req, res, next) {
 router.patch('/updateOrg/:orgId', function (req, res, next) {
   Org.findById(req.params.orgId, (err, result) => {
     if (result) {
-      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, result) {
+      Org.updateOne({
+        '_id': req.params.orgId
+      }, req.body, {
+        safe: true
+      }, function (err, result) {
         if (err) {
           console.log(err);
         } else {
@@ -170,6 +178,27 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
   })
 });
 
+//ROUTE FOR AN ADMIN USER'S HOMEPAGE
+router.get('/admin', function (req, res, next) {
+  let token = req.cookies.token;
+  if (token) {
+    authService.verifyUser(token).then(user => {
+      if (user.admin) {
+        models.Organizations
+        models.Users
+          .findAll({
+            where: {
+              Deleted: false
+            },
+            raw: true
+          })
+          .then(result => res.render('/admin'), {
 
+          })
+
+      }
+    })
+  }
+})
 
 module.exports = router;
