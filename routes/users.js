@@ -51,7 +51,8 @@ router.post('/login', function (req, res, next) {
           console.log(user, token);
           return res.status(201).json({
             message: "You are logged in.",
-            token: token
+            token: token,
+            user: user
           });
         } else {
           console.log("Wrong password!");
@@ -179,25 +180,45 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
 });
 
 //ROUTE FOR AN ADMIN USER'S HOMEPAGE
-router.get('/admin', function (req, res, next) {
+// router.get('/admin', function (req, res, next) {
+//   let token = req.cookies.token;
+//   if (token) {
+//     authService.verifyUser(token).then(user => {
+//       if (user.admin) {
+//         models.Organizations
+//         models.Users
+//           .findAll({
+//             where: {
+//               Deleted: false
+//             },
+//             raw: true
+//           })
+//           .then(result => res.render('/admin'), {
+
+//           })
+
+//       }
+//     })
+//   }
+// })
+
+router.get('/admin', function(req,res,next){
   let token = req.cookies.token;
   if (token) {
     authService.verifyUser(token).then(user => {
       if (user.admin) {
-        models.Organizations
-        models.Users
-          .findAll({
-            where: {
-              Deleted: false
-            },
-            raw: true
-          })
-          .then(result => res.render('/admin'), {
-
-          })
-
+        return res.status(201).json({
+          message: true,
+          user: user
+        });
+      } else {
+        return res.status(201).json({
+          message: "Not an admin"
+        })
       }
     })
+  } else {
+    res.send('You must be logged in');
   }
 })
 
