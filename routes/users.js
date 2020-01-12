@@ -144,7 +144,6 @@ router.post('/createOrg', function (req, res, next) {
                 });
               }
             });
-
         }
       })
   } else {
@@ -154,22 +153,51 @@ router.post('/createOrg', function (req, res, next) {
 });
 
 //ROUTE FOR A USER TO EDIT THEIR ORGANIZATION INFO
+// router.patch('/updateOrg/:orgId', function (req, res, next) {
+//   let token = req.cookies.jwt;
+//   if (token) {
+//     authService.verifyUser(token)
+//       .then(user => {
+//         if (user) {
+//           Org.findById(req.params.orgId, (err) => {
+//             if (err) {
+//               console.log(err);
+//             } else {
+//               Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, changed) {
+//                 if (err) {
+//                   console.log(err);
+//                 } else {
+//                   res.send(changed);
+//                   console.log(changed);
+//                 }
+//               })
+//             }
+//           })
+//         }
+//       })
+//   } else {
+//     console.log('You must be logged in.');
+//     res.send('You must be logged in.');
+//     res.status(401);
+//   }
+// });
+
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-  Org.findById(req.params.orgId, (err, result) => {
-    if (result) {
-      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, result) {
+  Org.findById(req.params.orgId, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, changed) {
         if (err) {
           console.log(err);
         } else {
-          res.send(result);
+          res.send(changed);
+          console.log(changed);
         }
       })
-    } else {
-      res.send('Can not find organization.');
     }
   })
 });
 
 
-
-module.exports = router;
+  module.exports = router;
