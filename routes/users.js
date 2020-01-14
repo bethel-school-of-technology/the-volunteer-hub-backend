@@ -203,7 +203,7 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
 // })
 
 router.get('/admin', function(req,res,next){
-  let token = req.cookies.token;
+  let token = req.cookies.jwt;
   if (token) {
     authService.verifyUser(token).then(user => {
       if (user.admin) {
@@ -212,7 +212,7 @@ router.get('/admin', function(req,res,next){
           user: user
         });
       } else {
-        return res.status(201).json({
+        return res.status(401).json({
           message: "Not an admin"
         })
       }
@@ -221,5 +221,17 @@ router.get('/admin', function(req,res,next){
     res.send('You must be logged in');
   }
 })
+
+//ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
+router.delete('/admin/deleteOrg/:id', function (req, res, next) {
+  Org.findByIdAndDelete(req.params.id, (err, deleted) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('This organization has been deleted:', deleted);
+      res.status(200);
+    }
+  })
+});
 
 module.exports = router;
