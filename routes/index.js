@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const org = require('../models/Organizations');
 var mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 
 
 //ROUTE FOR GETTING ALL ORGANIZATIONS IN THE DATABASE
@@ -41,6 +42,20 @@ router.get('/getOrgById/:id', function (req, res, next) {
     }
   });
 });
+
+async function main() {
+  let testAccount = await nodemailer.createTestAccount();
+
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass
+    }
+  })
+}
 
 module.exports = router;
 
