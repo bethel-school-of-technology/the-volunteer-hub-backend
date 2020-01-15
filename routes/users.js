@@ -229,7 +229,9 @@ router.delete('/admin/deleteOrg/:id', function (req, res, next) {
       console.log(err);
     } else {
       console.log('This organization has been deleted:', deleted);
-      res.status(200);
+      return res.status(200).json({
+        message: 'Success'
+      });
     }
   })
 });
