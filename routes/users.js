@@ -158,7 +158,11 @@ router.post('/createOrg', function (req, res, next) {
 
 //ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-  Org.findById(req.params.orgId, (err) => {
+  Org.findOneAndUpdate({
+    '_id': req.params.orgId
+  }, req.body, {
+    new: true
+  }, (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -174,6 +178,7 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
           console.log(changed);
         }
       })
+      console.log(result);
     }
   })
 });

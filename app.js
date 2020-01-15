@@ -109,5 +109,7 @@ mongoose.connection.on('disconnected', () => {
 
 mongoose.set('useCreateIndex', true);
 
+mongoose.set('useFindAndModify', false);
+
 
 module.exports = app;
