@@ -37,6 +37,8 @@ router.post('/login', function (req, res, next) {
   User.findOne({
     'username': req.body.username
   })
+      'username': req.body.username
+    })
     .then(user => {
       if (!user) {
         console.log("User not found.");
@@ -81,6 +83,9 @@ router.get('/Userprofile', function (req, res, next) {
       .then(user => {
         if (user) {
           User.findOne({ 'username': user.username }).then(user => {
+          User.findOne({
+            'username': user.username
+          }).then(user => {
             console.log(user);
             res.send(user);
           }).catch(err => {
@@ -101,6 +106,9 @@ router.get('/userOrgs', function (req, res, next) {
     authService.verifyUser(token).then(user => {
       if (user) {
         Org.find({ 'username': user.username }).then(org => {
+        Org.find({
+          'username': user.username
+        }).then(org => {
           console.log(org);
           res.send(org);
         }).catch(err => {
@@ -158,7 +166,6 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
     if (err) {
       console.log(err);
     } else {
-      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, changed) {
         if (err) {
           console.log(err);
         } else {
@@ -183,4 +190,3 @@ router.delete('/deleteOrg/:orgId', function (req, res, next) {
 });
 
 
-  module.exports = router;
