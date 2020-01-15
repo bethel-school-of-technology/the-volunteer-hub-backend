@@ -154,18 +154,15 @@ router.post('/createOrg', function (req, res, next) {
 
 //ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-  Org.findById(req.params.orgId, (err) => {
+  Org.findOneAndUpdate({ '_id': req.params.orgId }, req.body, { new: true }, (err, result) => {
     if (err) {
       console.log(err);
     } else {
-      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, changed) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(changed);
-          console.log(changed);
-        }
+      res.status(201).json({
+        message: 'Your organization has been updated.',
+        updatedOrganization: result
       })
+      console.log(result);
     }
   })
 });
@@ -183,4 +180,4 @@ router.delete('/deleteOrg/:orgId', function (req, res, next) {
 });
 
 
-  module.exports = router;
+module.exports = router;
