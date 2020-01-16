@@ -179,52 +179,9 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
   })
 });
 
-//ROUTE FOR AN ADMIN USER'S HOMEPAGE
-// router.get('/admin', function (req, res, next) {
-//   let token = req.cookies.token;
-//   if (token) {
-//     authService.verifyUser(token).then(user => {
-//       if (user.admin) {
-//         models.Organizations
-//         models.Users
-//           .findAll({
-//             where: {
-//               Deleted: false
-//             },
-//             raw: true
-//           })
-//           .then(result => res.render('/admin'), {
-
-//           })
-
-//       }
-//     })
-//   }
-// })
-
-router.get('/admin', function (req, res, next) {
-  let token = req.cookies.jwt;
-  if (token) {
-    authService.verifyUser(token).then(user => {
-      if (user.admin) {
-        return res.status(201).json({
-          message: true,
-          user: user
-        });
-      } else {
-        return res.status(401).json({
-          message: "Not an admin"
-        })
-      }
-    })
-  } else {
-    res.send('You must be logged in');
-  }
-})
-
 //ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
 router.delete('/admin/deleteOrg/:id', function (req, res, next) {
-  Users.findByIdAndDelete(req.params.id, (err, deleted) => {
+  Org.findByIdAndDelete(req.params.id, (err, deleted) => {
     if (err) {
       console.log(err);
     } else {
