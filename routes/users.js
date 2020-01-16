@@ -202,7 +202,7 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
 //   }
 // })
 
-router.get('/admin', function(req,res,next){
+router.get('/admin', function (req, res, next) {
   let token = req.cookies.jwt;
   if (token) {
     authService.verifyUser(token).then(user => {
@@ -224,11 +224,25 @@ router.get('/admin', function(req,res,next){
 
 //ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
 router.delete('/admin/deleteOrg/:id', function (req, res, next) {
-  Org.findByIdAndDelete(req.params.id, (err, deleted) => {
+  Users.findByIdAndDelete(req.params.id, (err, deleted) => {
     if (err) {
       console.log(err);
     } else {
       console.log('This organization has been deleted:', deleted);
+      return res.status(200).json({
+        message: 'Success'
+      });
+    }
+  })
+});
+
+//ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION REPRESENTATIVE
+router.delete('/admin/deleteUser/:id', function (req, res, next) {
+  User.findByIdAndDelete(req.params.id, (err, deleted) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('This organization represetative has been deleted:', deleted);
       return res.status(200).json({
         message: 'Success'
       });
