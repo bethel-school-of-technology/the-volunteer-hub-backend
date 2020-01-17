@@ -3,7 +3,45 @@ var router = express.Router();
 const org = require('../models/Organizations');
 const user = require('../models/Users');
 var mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 
+//NODEMAILER FUNCTION
+router.post('/sendMail', function(req,res,next) {
+  var orgEmail = req.body.email;
+  var applicantName = req.body.applicant;
+  var applicantContact = req.body.contact;
+  var orgName = req.body.orgName;
+
+  //codeburst nodemailer example
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+          user: 'testnodemailer111@gmail.com',
+          pass: 'nodemailerpassword'
+      }
+  });
+  const mailOptions = {
+    from: 'testnodemailer111@gmail.com', // sender address
+    to: orgEmail, // list of receivers
+    subject: 'Someone applied to your organization!', // Subject line
+    html: `<p>Hi there! We we are reaching out to let you know that, ${applicantName}, has applied to volunteer at your organization ${orgName}! Feel free to contact them and schedule some hours at ${applicantContact}!</p>`// plain text body
+  };
+
+  transporter.sendMail(mailOptions, function (err, info) {
+    if(err) {
+      console.log(err)
+      res.status(404).json({
+        message: "Error applying"
+      });
+    }
+    else{      
+      console.log(info);
+      res.status(200).json({
+        message: "You have successfully applied!"
+      });
+    }
+  });
+});
 
 //ROUTE FOR GETTING ALL ORGANIZATIONS IN THE DATABASE
 router.get('/getOrgs', function (req, res, next) {
