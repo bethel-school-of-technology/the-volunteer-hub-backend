@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const org = require('../models/Organizations');
+const user = require('../models/Users');
 var mongoose = require('mongoose');
 
 
@@ -23,6 +24,12 @@ router.get('/getOrgs/:state', function (req, res, next) {
   })
 })
 
+
+//ROUTE FOR GETTING ALL USERS FOR THE ADMIN PAGE
+router.get('/getUsers', function (req, res, next) {
+  user.find()
+  .then(result => {
+
 //ROUTE FOR GETTING ORGANIZATIONS BY _ID
 router.get('/getOrgsTest', function (req, res, next) {
   org.findById(mongoose.Types.ObjectId('5dfdcdee211c0054f3696511')).then(result => {
@@ -30,6 +37,8 @@ router.get('/getOrgsTest', function (req, res, next) {
     res.send(result);
   })
 });
+
+
 
 router.get('/getOrgById/:id', function (req, res, next) {
   org.findById(req.params.id).then(result => {
@@ -41,6 +50,7 @@ router.get('/getOrgById/:id', function (req, res, next) {
     }
   });
 });
+
 
 module.exports = router;
 
