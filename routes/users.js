@@ -35,8 +35,8 @@ router.post('/signup', (req, res, next) => {
 //ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
-      'username': req.body.username
-    })
+    'username': req.body.username
+  })
     .then(user => {
       if (!user) {
         console.log("User not found.");
@@ -159,25 +159,30 @@ router.post('/createOrg', function (req, res, next) {
 
 //ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-
-
-  Org.findOneAndUpdate({
-    '_id': req.params.orgId
-  }, req.body, {
-    new: true
- }, function (err, changed) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(changed);
-          console.log(changed);
-        }
+  Org.findOneAndUpdate({ '_id': req.params.orgId }, req.body, { new: true }, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(201).json({
+        message: 'Your organization has been updated.',
+        updatedOrganization: result
       })
       console.log(result);
     }
   })
 });
 
+//ROUTE FOR A USER TO DELETE ONE OF THEIR ORGANIZATIONS
+router.delete('/deleteOrg/:orgId', function (req, res, next) {
+  Org.findByIdAndDelete(req.params.orgId, (err, deleted) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('This organization has been deleted.', deleted);
+      res.status(200);
+    }
+  })
+});
 
 //ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
 router.delete('/admin/deleteOrg/:id', function (req, res, next) {
@@ -188,16 +193,7 @@ router.delete('/admin/deleteOrg/:id', function (req, res, next) {
       console.log('This organization has been deleted:', deleted);
       return res.status(200).json({
         message: 'Success'
-      });
-
-//ROUTE FOR A USER TO DELETE ONE OF THEIR ORGANIZATIONS
-router.delete('/deleteOrg/:orgId', function (req, res, next) {
-  Org.findByIdAndDelete(req.params.orgId, (err, deleted) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('This organization has been deleted.', deleted);
-      res.status(200);
+      })
     }
   })
 });
