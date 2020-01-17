@@ -51,7 +51,8 @@ router.post('/login', function (req, res, next) {
           console.log(user, token);
           return res.status(201).json({
             message: "You are logged in.",
-            token: token
+            token: token,
+            user: user
           });
         } else {
           console.log("Wrong password!");
@@ -65,22 +66,24 @@ router.post('/login', function (req, res, next) {
 });
 
 //ROUTE FOR A USER TO LOGOUT.
-router.get('/logout', function (req, res, send) {
-  res.cookie('jwt', "", {
-    expires: new Date(0)
-  });
-  res.send('You are logged out');
-});
+// router.get('/logout', function (req, res, send) {
+//   res.cookie('token', "", {
+//     expires: new Date(0)
+//   });
+//   res.send('You are logged out');
+// });
 
 //ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
-router.get('/Userprofile', function (req, res, next) {
+router.get('/userProfile', function (req, res, next) {
   let token = req.cookies.token;
   console.log(token);
   if (token) {
     authService.verifyUser(token)
       .then(user => {
         if (user) {
-          User.findOne({ 'username': user.username }).then(user => {
+          User.findOne({
+            'username': user.username
+          }).then(user => {
             console.log(user);
             res.send(user);
           }).catch(err => {
@@ -100,7 +103,9 @@ router.get('/userOrgs', function (req, res, next) {
   if (token) {
     authService.verifyUser(token).then(user => {
       if (user) {
-        Org.find({ 'username': user.username }).then(org => {
+        Org.find({
+          'username': user.username
+        }).then(org => {
           console.log(org);
           res.send(org);
         }).catch(err => {
@@ -154,18 +159,19 @@ router.post('/createOrg', function (req, res, next) {
 
 //ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-  Org.findById(req.params.orgId, (err) => {
+  Org.findOneAndUpdate({ '_id': req.params.orgId }, req.body, { new: true }, (err, result) => {
     if (err) {
       console.log(err);
-    } else {
-      Org.updateOne({ '_id': req.params.orgId }, req.body, { safe: true }, function (err, changed) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(changed);
-          console.log(changed);
-        }
+    } else if (!result) {
+      res.status(201).json({
+        message: 'Organization was not updated.'
       })
+    } else {
+      res.status(201).json({
+        message: 'Your organization has been updated.',
+        updatedOrganization: result
+      })
+      console.log(result);
     }
   })
 });
@@ -182,5 +188,32 @@ router.delete('/deleteOrg/:orgId', function (req, res, next) {
   })
 });
 
+//ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
+router.delete('/admin/deleteOrg/:id', function (req, res, next) {
+  Org.findByIdAndDelete(req.params.id, (err, deleted) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('This organization has been deleted:', deleted);
+      return res.status(200).json({
+        message: 'Success'
+      })
+    }
+  })
+});
 
-  module.exports = router;
+//ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION REPRESENTATIVE
+router.delete('/admin/deleteUser/:id', function (req, res, next) {
+  User.findByIdAndDelete(req.params.id, (err, deleted) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('This organization represetative has been deleted:', deleted);
+      return res.status(200).json({
+        message: 'Success'
+      });
+    }
+  })
+});
+
+module.exports = router;

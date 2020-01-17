@@ -10,6 +10,11 @@ const UserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    admin: {
+        type: Boolean,
+        allowNull: false,
+        defaultValue: false
+    },
     email: {
         type: String,
         required: true,

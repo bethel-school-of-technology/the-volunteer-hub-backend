@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const org = require('../models/Organizations');
+const user = require('../models/Users');
 var mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 
@@ -54,21 +55,24 @@ router.get('/getOrgs', function (req, res, next) {
 //ROUTE FOR GETTING ORGANIZATIONS BY SEARCH QUERY
 router.get('/getOrgs/:state', function (req, res, next) {
   var state = req.params.state;
-
   org.find({ 'state': state }).then(found => {
     res.send(found);
     console.log(found);
   })
 })
 
-//ROUTE FOR GETTING ORGANIZATIONS BY _ID
-router.get('/getOrgsTest', function (req, res, next) {
-  org.findById(mongoose.Types.ObjectId('5dfdcdee211c0054f3696511')).then(result => {
+
+//ROUTE FOR GETTING ALL USERS FOR THE ADMIN PAGE
+router.get('/getUsers', function (req, res, next) {
+  user.find()
+  .then(result => {
     console.log(result);
     res.send(result);
   })
 });
 
+
+//ROUTE FOR GETTING ORGANIZATIONS BY _ID
 router.get('/getOrgById/:id', function (req, res, next) {
   org.findById(req.params.id).then(result => {
     console.log(result);
@@ -81,6 +85,4 @@ router.get('/getOrgById/:id', function (req, res, next) {
 });
 
 
-
 module.exports = router;
-
