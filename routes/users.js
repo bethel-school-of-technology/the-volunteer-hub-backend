@@ -149,7 +149,6 @@ router.post('/createOrg', function (req, res, next) {
                 });
               }
             });
-
         }
       })
   } else {
@@ -158,26 +157,27 @@ router.post('/createOrg', function (req, res, next) {
   }
 });
 
-//ROUTE FOR A USER TO EDIT THEIR ORGANIZATION INFO
+//ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-  Org.findById(req.params.orgId, (err, result) => {
-    if (result) {
-      Org.updateOne({
-        '_id': req.params.orgId
-      }, req.body, {
-        safe: true
-      }, function (err, result) {
+
+
+  Org.findOneAndUpdate({
+    '_id': req.params.orgId
+  }, req.body, {
+    new: true
+ }, function (err, changed) {
         if (err) {
           console.log(err);
         } else {
-          res.send(result);
+          res.send(changed);
+          console.log(changed);
         }
       })
-    } else {
-      res.send('Can not find organization.');
+      console.log(result);
     }
   })
 });
+
 
 //ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
 router.delete('/admin/deleteOrg/:id', function (req, res, next) {
@@ -189,6 +189,15 @@ router.delete('/admin/deleteOrg/:id', function (req, res, next) {
       return res.status(200).json({
         message: 'Success'
       });
+
+//ROUTE FOR A USER TO DELETE ONE OF THEIR ORGANIZATIONS
+router.delete('/deleteOrg/:orgId', function (req, res, next) {
+  Org.findByIdAndDelete(req.params.orgId, (err, deleted) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('This organization has been deleted.', deleted);
+      res.status(200);
     }
   })
 });
