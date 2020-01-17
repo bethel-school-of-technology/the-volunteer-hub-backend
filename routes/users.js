@@ -66,15 +66,15 @@ router.post('/login', function (req, res, next) {
 });
 
 //ROUTE FOR A USER TO LOGOUT.
-router.get('/logout', function (req, res, send) {
-  res.cookie('jwt', "", {
-    expires: new Date(0)
-  });
-  res.send('You are logged out');
-});
+// router.get('/logout', function (req, res, send) {
+//   res.cookie('token', "", {
+//     expires: new Date(0)
+//   });
+//   res.send('You are logged out');
+// });
 
 //ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
-router.get('/Userprofile', function (req, res, next) {
+router.get('/userProfile', function (req, res, next) {
   let token = req.cookies.token;
   console.log(token);
   if (token) {
@@ -162,6 +162,10 @@ router.patch('/updateOrg/:orgId', function (req, res, next) {
   Org.findOneAndUpdate({ '_id': req.params.orgId }, req.body, { new: true }, (err, result) => {
     if (err) {
       console.log(err);
+    } else if (!result) {
+      res.status(201).json({
+        message: 'Organization was not updated.'
+      })
     } else {
       res.status(201).json({
         message: 'Your organization has been updated.',

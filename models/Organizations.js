@@ -17,10 +17,6 @@ const OrganizationSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
-        type: Date,
-        required: true
-    },
     email: {
         type: String,
         required: true
