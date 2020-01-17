@@ -4,6 +4,36 @@ const org = require('../models/Organizations');
 var mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 
+//NODEMAILER FUNCTION
+router.post('/sendMail', function(req,res,next) {
+  var orgName = req.body.name;
+  //codeburst nodemailer example
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+          user: 'testnodemailer111@gmail.com',
+          pass: 'nodemailerpassword'
+      }
+  });
+  const mailOptions = {
+    from: 'testnodemailer111@gmail.com', // sender address
+    to: 'elyamurza@yahoo.com', // list of receivers
+    subject: 'Thank you for applying!', // Subject line
+    html: `<p>Hi there! We appreciate you applying to this position, ${orgName}, they will get in contact with you if they decide to proceed!</p>`// plain text body
+  };
+
+  transporter.sendMail(mailOptions, function (err, info) {
+    if(err) {
+      console.log(err)
+      res.send(404);
+    }
+    else{      
+      console.log(info);
+      res.send(200);
+    }
+  });
+
+});
 
 //ROUTE FOR GETTING ALL ORGANIZATIONS IN THE DATABASE
 router.get('/getOrgs', function (req, res, next) {
@@ -43,19 +73,7 @@ router.get('/getOrgById/:id', function (req, res, next) {
   });
 });
 
-async function main() {
-  let testAccount = await nodemailer.createTestAccount();
 
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass
-    }
-  })
-}
 
 module.exports = router;
 
