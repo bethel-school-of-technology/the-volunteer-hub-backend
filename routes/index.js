@@ -6,7 +6,11 @@ const nodemailer = require('nodemailer');
 
 //NODEMAILER FUNCTION
 router.post('/sendMail', function(req,res,next) {
-  var orgName = req.body.name;
+  var orgEmail = req.body.email;
+  var applicantName = req.body.applicant;
+  var applicantContact = req.body.contact;
+  var orgName = req.body.orgName;
+
   //codeburst nodemailer example
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -17,22 +21,25 @@ router.post('/sendMail', function(req,res,next) {
   });
   const mailOptions = {
     from: 'testnodemailer111@gmail.com', // sender address
-    to: 'elyamurza@yahoo.com', // list of receivers
-    subject: 'Thank you for applying!', // Subject line
-    html: `<p>Hi there! We appreciate you applying to this position, ${orgName}, they will get in contact with you if they decide to proceed!</p>`// plain text body
+    to: orgEmail, // list of receivers
+    subject: 'Someone applied to your organization!', // Subject line
+    html: `<p>Hi there! We we are reaching out to let you know that, ${applicantName}, has applied to volunteer at your organization ${orgName}! Feel free to contact them and schedule some hours at ${applicantContact}!</p>`// plain text body
   };
 
   transporter.sendMail(mailOptions, function (err, info) {
     if(err) {
       console.log(err)
-      res.send(404);
+      res.status(404).json({
+        message: "Error applying"
+      });
     }
     else{      
       console.log(info);
-      res.send(200);
+      res.status(200).json({
+        message: "You have successfully applied!"
+      });
     }
   });
-
 });
 
 //ROUTE FOR GETTING ALL ORGANIZATIONS IN THE DATABASE
