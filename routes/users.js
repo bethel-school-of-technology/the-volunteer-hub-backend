@@ -35,8 +35,8 @@ router.post('/signup', (req, res, next) => {
 //ROUTE FOR A USER TO LOGIN.
 router.post('/login', function (req, res, next) {
   User.findOne({
-    'username': req.body.username
-  })
+      'username': req.body.username
+    })
     .then(user => {
       if (!user) {
         console.log("User not found.");
@@ -80,7 +80,7 @@ router.get('/userProfile', function (req, res, next) {
   if (token) {
     authService.verifyUser(token)
       .then(user => {
-        if (user) {
+        if (user && user.admin === "false") {
           User.findOne({
             'username': user.username
           }).then(user => {
@@ -159,7 +159,11 @@ router.post('/createOrg', function (req, res, next) {
 
 //ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
 router.patch('/updateOrg/:orgId', function (req, res, next) {
-  Org.findOneAndUpdate({ '_id': req.params.orgId }, req.body, { new: true }, (err, result) => {
+  Org.findOneAndUpdate({
+    '_id': req.params.orgId
+  }, req.body, {
+    new: true
+  }, (err, result) => {
     if (err) {
       console.log(err);
     } else if (!result) {
