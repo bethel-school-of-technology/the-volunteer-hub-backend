@@ -12,7 +12,8 @@ router.post('/signup', (req, res, next) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
-    password: authService.hashPassword(req.body.password)
+    password: authService.hashPassword(req.body.password),
+    admin: false
   });
   user.save()
     .then(result => {
@@ -48,7 +49,7 @@ router.post('/login', function (req, res, next) {
         if (passwordMatch) {
           let token = authService.signUser(user);
           res.cookie('jwt', token);
-          console.log(user, token);
+          // console.log(user, token);
           return res.status(201).json({
             message: "You are logged in.",
             token: token,
@@ -80,7 +81,7 @@ router.get('/userProfile', function (req, res, next) {
   if (token) {
     authService.verifyUser(token)
       .then(user => {
-        if (user && user.admin === "false") {
+        if (user) {
           User.findOne({
             'username': user.username
           }).then(user => {
