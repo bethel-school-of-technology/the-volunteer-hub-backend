@@ -12,7 +12,7 @@ router.post('/sendMail', function(req,res,next) {
   var applicantContact = req.body.contact;
   var orgName = req.body.orgName;
 
-  //codeburst nodemailer example
+  //Establish transport, service, and user and password that emails will be sent from
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -27,6 +27,7 @@ router.post('/sendMail', function(req,res,next) {
     html: `<p>Hi there! We we are reaching out to let you know that, ${applicantName}, has applied to volunteer at your organization ${orgName}! Feel free to contact them and schedule some hours at ${applicantContact}!</p>`// plain text body
   };
 
+  //Transporter sends mail
   transporter.sendMail(mailOptions, function (err, info) {
     if(err) {
       console.log(err)

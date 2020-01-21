@@ -50,7 +50,6 @@ router.post("/login", function(req, res, next) {
       if (passwordMatch) {
         let token = authService.signUser(user);
         res.cookie("jwt", token);
-        // console.log(user, token);
         return res.status(201).json({
           message: "You are logged in.",
           token: token,
@@ -65,14 +64,6 @@ router.post("/login", function(req, res, next) {
     }
   });
 });
-
-//ROUTE FOR A USER TO LOGOUT.
-// router.get('/logout', function (req, res, send) {
-//   res.cookie('token', "", {
-//     expires: new Date(0)
-//   });
-//   res.send('You are logged out');
-// });
 
 //ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
 router.get("/userProfile", function(req, res, next) {
@@ -161,7 +152,7 @@ router.post("/createOrg", function(req, res, next) {
   }
 });
 
-//Compare organization and user
+//ROUTE TO COMPARE ORGANIZATION AND USER
 router.post("/compareUser", function(req, res, next) {
   let token = req.cookies.token;
   let id = req.body._id;
@@ -196,7 +187,7 @@ router.post("/compareUser", function(req, res, next) {
   }
 });
 
-//Check who is current user
+//ROUTE TO CHECK WHO IS CURRENT USER
 router.get("/getUser", function(req, res, next) {
   let token = req.cookies.token;
   if (token) {
