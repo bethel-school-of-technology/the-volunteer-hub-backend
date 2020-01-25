@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+
 
 
 
@@ -49,11 +50,11 @@ var enableCors = function(req, res) {
       return;
     }
 
-  // res.header('Access-Control-Allow-Origin', '*');
-  // res.header('Access-Control-Allow-Headers', '*');
-  // res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
-
-  // res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Origin', 'https://the-volunteer-hub-frontend.herokuapp.com');
+    res.header('Access-Control-Allow-Headers', '*');
+    res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+  
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 }); 
 
@@ -111,5 +112,9 @@ mongoose.set('useCreateIndex', true);
 
 mongoose.set('useFindAndModify', false);
 
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Our app is running on port ${ PORT }`);
+});
 
 module.exports = app;
