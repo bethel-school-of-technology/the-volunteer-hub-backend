@@ -77,7 +77,7 @@ router.get("/userProfile", function(req, res, next) {
         })
           .then(user => {
             console.log(user);
-            res.send(user);
+            res.send().json({user});
           })
           .catch(err => {
             console.log(err);
