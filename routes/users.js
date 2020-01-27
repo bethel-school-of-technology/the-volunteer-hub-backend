@@ -33,7 +33,7 @@ router.post("/signup", (req, res, next) => {
 });
 
 //ROUTE FOR A USER TO LOGIN.
-router.post("/login", function(req, res, next) {
+router.post("/login", function (req, res, next) {
   User.findOne({
     username: req.body.username
   }).then(user => {
@@ -66,20 +66,22 @@ router.post("/login", function(req, res, next) {
 });
 
 //ROUTE TO RETRIEVE THE CURRENTLY LOGGED IN USER'S INFO FOR THEIR PROFILE PAGE
-router.get("/userProfile", function(req, res, next) {
+router.get("/userProfile", function (req, res, next) {
+  console.log('cookies', req.cookies);
+
   let token = req.cookies.token;
+
   console.log(token);
+
   if (token) {
     authService.verifyUser(token).then(user => {
       if (user) {
         User.findOne({
-          username: user.username
-        })
+            username: user.username
+          })
           .then(user => {
             console.log(user);
-            res.status(200).json({
-              user: user
-            });
+            res.send(user);
           })
           .catch(err => {
             console.log(err);
@@ -87,20 +89,24 @@ router.get("/userProfile", function(req, res, next) {
       }
     });
   } else {
-    res.send("must be logged in");
+    res.status(500).json({
+      cookies: req.cookies,
+      message: "Must be logged in."
+    });
+    // res.send("must be logged in");
     console.log("You must be logged in.");
   }
 });
 
 //ROUTE TO GET ORGANIZATION FOR PROFILE PAGE
-router.get("/userOrgs", function(req, res, next) {
+router.get("/userOrgs", function (req, res, next) {
   let token = req.cookies.token;
   if (token) {
     authService.verifyUser(token).then(user => {
       if (user) {
         Org.find({
-          username: user.username
-        })
+            username: user.username
+          })
           .then(org => {
             console.log(org);
             res.send(org);
@@ -116,7 +122,7 @@ router.get("/userOrgs", function(req, res, next) {
 });
 
 //ROUTE FOR A REGISTERED USER TO CREATE AN ORGANIZATION
-router.post("/createOrg", function(req, res, next) {
+router.post("/createOrg", function (req, res, next) {
   let token = req.cookies.token;
   console.log(token);
   if (token) {
@@ -155,7 +161,7 @@ router.post("/createOrg", function(req, res, next) {
 });
 
 //ROUTE TO COMPARE ORGANIZATION AND USER
-router.post("/compareUser", function(req, res, next) {
+router.post("/compareUser", function (req, res, next) {
   let token = req.cookies.token;
   let id = req.body._id;
   let user = req.body.user;
@@ -167,7 +173,9 @@ router.post("/compareUser", function(req, res, next) {
           message: "Could not find Organization"
         });
       } else {
-        User.findOne({ username: user }).then(user => {
+        User.findOne({
+          username: user
+        }).then(user => {
           if (!user) {
             return res.status(401).json({
               message: "Are you sure you exist?"
@@ -190,7 +198,7 @@ router.post("/compareUser", function(req, res, next) {
 });
 
 //ROUTE TO CHECK WHO IS CURRENT USER
-router.get("/getUser", function(req, res, next) {
+router.get("/getUser", function (req, res, next) {
   let token = req.cookies.token;
   if (token) {
     authService.verifyUser(token).then(user => {
@@ -204,13 +212,11 @@ router.get("/getUser", function(req, res, next) {
 });
 
 //ROUTE FOR A USER TO EDIT ONE OF THEIR ORGANIZATIONS
-router.patch("/updateOrg/:orgId", function(req, res, next) {
-  Org.findOneAndUpdate(
-    {
+router.patch("/updateOrg/:orgId", function (req, res, next) {
+  Org.findOneAndUpdate({
       _id: req.params.orgId
     },
-    req.body,
-    {
+    req.body, {
       new: true
     },
     (err, result) => {
@@ -232,7 +238,7 @@ router.patch("/updateOrg/:orgId", function(req, res, next) {
 });
 
 //ROUTE FOR A USER TO DELETE ONE OF THEIR ORGANIZATIONS
-router.delete("/deleteOrg/:orgId", function(req, res, next) {
+router.delete("/deleteOrg/:orgId", function (req, res, next) {
   Org.findByIdAndDelete(req.params.orgId, (err, deleted) => {
     if (err) {
       console.log(err);
@@ -244,7 +250,7 @@ router.delete("/deleteOrg/:orgId", function(req, res, next) {
 });
 
 //ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION
-router.delete("/admin/deleteOrg/:id", function(req, res, next) {
+router.delete("/admin/deleteOrg/:id", function (req, res, next) {
   Org.findByIdAndDelete(req.params.id, (err, deleted) => {
     if (err) {
       console.log(err);
@@ -258,7 +264,7 @@ router.delete("/admin/deleteOrg/:id", function(req, res, next) {
 });
 
 //ROUTE FOR AN ADMIN USER TO DELETE AN ORGANIZATION REPRESENTATIVE
-router.delete("/admin/deleteUser/:id", function(req, res, next) {
+router.delete("/admin/deleteUser/:id", function (req, res, next) {
   User.findByIdAndDelete(req.params.id, (err, deleted) => {
     if (err) {
       console.log(err);
