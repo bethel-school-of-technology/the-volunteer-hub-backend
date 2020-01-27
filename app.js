@@ -50,7 +50,7 @@ var enableCors = function(req, res) {
       return;
     }
 
-    res.header('Access-Control-Allow-Origin', 'https://the-volunteer-hub-frontend.herokuapp.com');
+    res.header('Access-Control-Allow-Origin', 'https://volunteer-hub-frontend.herokuapp.com');
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
   
