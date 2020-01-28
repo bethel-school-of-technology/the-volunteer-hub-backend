@@ -25,6 +25,10 @@ const OrganizationSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Organization', OrganizationSchema);
